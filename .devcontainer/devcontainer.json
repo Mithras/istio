@@ -1,0 +1,32 @@
+{
+  "name": "istio",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  // "remoteUser": "vscode", // <--- user for VS Code
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "mhutchie.git-graph",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "HashiCorp.terraform",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "bierner.markdown-mermaid"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/azure-cli:1": {},
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "tflint": "none",
+      "terragrunt": "none"
+    },
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "minikube": "none"
+    }
+  }
+}

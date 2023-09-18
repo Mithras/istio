@@ -1,0 +1,14 @@
+services:
+  dev:
+    build:
+      context: .
+    stdin_open: true
+    tty: true
+    # env_file: .env
+    volumes:
+      - ..:/workspace
+      - kube:/home/vscode/.kube
+    # user: vscode // <--- default container user
+volumes:
+  kube:
+    name: istio_kube
