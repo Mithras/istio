@@ -1,0 +1,20 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: ratings-deny
+  annotations:
+    "istio.io/dry-run": "true"
+spec:
+  selector:
+    matchLabels:
+      app: ratings
+  action: DENY
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/default/sa/bookinfo-reviews
+      to:
+        - operation:
+            methods:
+              - GET

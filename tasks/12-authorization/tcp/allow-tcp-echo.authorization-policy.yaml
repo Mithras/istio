@@ -1,0 +1,14 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: tcp-policy
+spec:
+  selector:
+    matchLabels:
+      app: tcp-echo
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            ports:
+              - "9000"

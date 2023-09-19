@@ -1,0 +1,333 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    istio-injection: enabled
+  name: bar
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    istio-injection: enabled
+  name: foo
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: legacy
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: httpbin
+  namespace: bar
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sleep
+  namespace: bar
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: httpbin
+  namespace: foo
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sleep
+  namespace: foo
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: httpbin
+  namespace: legacy
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sleep
+  namespace: legacy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: httpbin
+    service: httpbin
+  name: httpbin
+  namespace: bar
+spec:
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 80
+  selector:
+    app: httpbin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sleep
+    service: sleep
+  name: sleep
+  namespace: bar
+spec:
+  ports:
+  - name: http
+    port: 80
+  selector:
+    app: sleep
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: httpbin
+    service: httpbin
+  name: httpbin
+  namespace: foo
+spec:
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 80
+  selector:
+    app: httpbin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sleep
+    service: sleep
+  name: sleep
+  namespace: foo
+spec:
+  ports:
+  - name: http
+    port: 80
+  selector:
+    app: sleep
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: httpbin
+    service: httpbin
+  name: httpbin
+  namespace: legacy
+spec:
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 80
+  selector:
+    app: httpbin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sleep
+    service: sleep
+  name: sleep
+  namespace: legacy
+spec:
+  ports:
+  - name: http
+    port: 80
+  selector:
+    app: sleep
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin
+  namespace: bar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: httpbin
+        version: v1
+    spec:
+      containers:
+      - image: docker.io/kong/httpbin
+        imagePullPolicy: IfNotPresent
+        name: httpbin
+        ports:
+        - containerPort: 80
+      serviceAccountName: httpbin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sleep
+  namespace: bar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sleep
+  template:
+    metadata:
+      labels:
+        app: sleep
+    spec:
+      containers:
+      - command:
+        - /bin/sleep
+        - infinity
+        image: curlimages/curl
+        imagePullPolicy: IfNotPresent
+        name: sleep
+        volumeMounts:
+        - mountPath: /etc/sleep/tls
+          name: secret-volume
+      serviceAccountName: sleep
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: secret-volume
+        secret:
+          optional: true
+          secretName: sleep-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin
+  namespace: foo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: httpbin
+        version: v1
+    spec:
+      containers:
+      - image: docker.io/kong/httpbin
+        imagePullPolicy: IfNotPresent
+        name: httpbin
+        ports:
+        - containerPort: 80
+      serviceAccountName: httpbin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sleep
+  namespace: foo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sleep
+  template:
+    metadata:
+      labels:
+        app: sleep
+    spec:
+      containers:
+      - command:
+        - /bin/sleep
+        - infinity
+        image: curlimages/curl
+        imagePullPolicy: IfNotPresent
+        name: sleep
+        volumeMounts:
+        - mountPath: /etc/sleep/tls
+          name: secret-volume
+      serviceAccountName: sleep
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: secret-volume
+        secret:
+          optional: true
+          secretName: sleep-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin
+  namespace: legacy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: httpbin
+        version: v1
+    spec:
+      containers:
+      - image: docker.io/kong/httpbin
+        imagePullPolicy: IfNotPresent
+        name: httpbin
+        ports:
+        - containerPort: 80
+      serviceAccountName: httpbin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sleep
+  namespace: legacy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sleep
+  template:
+    metadata:
+      labels:
+        app: sleep
+    spec:
+      containers:
+      - command:
+        - /bin/sleep
+        - infinity
+        image: curlimages/curl
+        imagePullPolicy: IfNotPresent
+        name: sleep
+        volumeMounts:
+        - mountPath: /etc/sleep/tls
+          name: secret-volume
+      serviceAccountName: sleep
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: secret-volume
+        secret:
+          optional: true
+          secretName: sleep-secret
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: httpbin
+  namespace: bar
+spec:
+  mtls:
+    mode: STRICT
+  selector:
+    matchLabels:
+      app: httpbin

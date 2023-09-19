@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+components:
+  - ../components/aks-gateway-fix
+resources:
+  - https://raw.githubusercontent.com/istio/istio/release-1.19/samples/sleep/sleep.yaml
+  - https://raw.githubusercontent.com/istio/istio/release-1.19/samples/tcp-echo/tcp-echo-services.yaml
+  - https://raw.githubusercontent.com/istio/istio/release-1.19/samples/tcp-echo/gateway-api/tcp-echo-all-v1.yaml # BUG: doesn't work
+
+# k apply -k .
+# k delete -k .
+
+# export SLEEP=$(kubectl get pod -l app=sleep -o jsonpath={.items..metadata.name})
+
+# kubectl exec "$SLEEP" -c sleep -- sh -c "(date; sleep 1) | nc tcp-echo 9000" # one / two
+# kubectl exec "$SLEEP" -c sleep -- sh -c "(date; sleep 1) | nc tcp-echo-v1 9000" # one
+# kubectl exec "$SLEEP" -c sleep -- sh -c "(date; sleep 1) | nc tcp-echo-v2 9000" # two
+
+# tcp-echo-gateway-istio
+# 10.0.172.24         20.14.14.106
+# kubectl exec "$SLEEP" -c sleep -- sh -c "(date; sleep 1) | nc 20.14.14.106 31400" # BUG: doesn't work
+# kubectl exec "$SLEEP" -c sleep -- sh -c "(date; sleep 1) | nc tcp-echo-gateway-istio 31400" # BUG: doesn't work
+# kubectl exec "$SLEEP" -c sleep -- sh -c "(date; sleep 1) | nc 10.0.172.24 31400" # BUG: doesn't work

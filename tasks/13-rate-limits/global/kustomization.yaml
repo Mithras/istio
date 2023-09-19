@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../00-common/bookinfo
+  - https://raw.githubusercontent.com/istio/istio/release-1.19/samples/ratelimit/rate-limit-service.yaml
+  - ratelimit-config.config-map.yaml
+  - filter-ratelimit.envoy-filter.yaml
+  - filter-ratelimit-svc.envoy-filter.yaml
+
+# kubectl kustomize . > output.yaml
+# kubectl diff -k .
+# kubectl apply -k .
+# kubectl delete -k .
+
+# https://github.com/envoyproxy/ratelimit
+# https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/route/v3/route_components.proto#envoy-v3-api-msg-config-route-v3-ratelimit

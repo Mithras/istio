@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../00-common/bookinfo
+  - allow-nothing.authorization-policy.yaml
+  - allow-ingress.authorization-policy.yaml
+  - allow-productpage.authorization-policy.yaml
+  - allow-details.authorization-policy.yaml
+  - allow-reviews.authorization-policy.yaml
+  - allow-ratings.authorization-policy.yaml
+  - dry-deny-ratings.authorization-policy.yaml
+  - basic-auth.wasm-plugin.yaml
+
+# kubectl kustomize . > output.yaml
+# kubectl diff -k .
+# kubectl apply -k .
+# kubectl delete -k .
+
+# istioctl proxy-config log deploy/ratings-v1 --level "rbac:debug"
+# kubectl logs deploy/ratings-v1 -c istio-proxy | grep "shadow denied"

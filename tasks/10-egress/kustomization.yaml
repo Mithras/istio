@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# components:
+#   - ../components/aks-gateway-fix
+resources:
+  - https://raw.githubusercontent.com/istio/istio/release-1.19/samples/sleep/sleep.yaml
+  # - httpbin-ext.service-entry.yaml
+  # - httpbin-ext.virtual-service.yaml
+  # - google.service-entry.yaml
+  - edition-cnn-com.service-entry.yaml
+  - edition-cnn-com.destination-rule.yaml
+
+# kubectl diff -k .
+# kubectl apply -k .
+# kubectl delete -k .
+
+# export SOURCE_POD=$(kubectl get pod -l app=sleep -o jsonpath='{.items..metadata.name}')
+
+# kubectl exec "$SOURCE_POD" -c sleep -- curl -sSi http://httpbin.org/headers
+# kubectl exec "$SOURCE_POD" -c sleep -- curl -sSI https://www.google.com
+# kubectl exec "$SOURCE_POD" -c sleep -- time curl -o /dev/null -sS -w "%{http_code}\n" http://httpbin.org/delay/5
+
+# kubectl exec "$SOURCE_POD" -c sleep -- curl -sSL -o /dev/null -D - http://edition.cnn.com/politics
+#   301 -> 200 without ServiceEntry.targetPort and DestinationRule and 200 with

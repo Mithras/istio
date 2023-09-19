@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - httpbin-v1.deployment.yaml
+  - httpbin-v2.deployment.yaml
+  - httpbin.service.yaml
+  - sleep.deployment.yaml
+  - httpbin-v1.service.yaml
+  - httpbin-v2.service.yaml
+  - httpbin.http-route.yaml
+
+# kubectl diff -k .
+# kubectl apply -k .
+
+# export SLEEP_POD=$(kubectl get pod -l app=sleep -o jsonpath={.items..metadata.name})
+# export V1_POD=$(kubectl get pod -l app=httpbin,version=v1 -o jsonpath={.items..metadata.name})
+# export V2_POD=$(kubectl get pod -l app=httpbin,version=v2 -o jsonpath={.items..metadata.name})
+# kubectl exec "${SLEEP_POD}" -c sleep -- curl -sS http://httpbin:8000/headers
+# kubectl logs "$V1_POD" -c httpbin
+# kubectl logs "$V2_POD" -c httpbin

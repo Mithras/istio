@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# components:
+#   - ../components/aks-gateway-fix
+resources:
+  - foo
+  - bar
+  - legacy
+  # - istio-system.peer-authentication.yaml # global mTLS
+  # - foo.peer-authentication.yaml # foo mTLS
+  - httpbin-bar.peer-authentication.yaml # bar/httpbin mTLS
+
+# kubectl kustomize . > output.yaml
+# kubectl diff -k .
+# kubectl apply -k .
+# kubectl delete -k .
+
+# for from in "foo" "bar" "legacy"; do for to in "foo" "bar" "legacy"; do kubectl exec "$(kubectl get pod -l app=sleep -n ${from} -o jsonpath={.items..metadata.name})" -c sleep -n ${from} -- curl -s "http://httpbin.${to}:8000/ip" -s -o /dev/null -w "sleep.${from} to httpbin.${to}: %{http_code}\n"; done; done
+# - default: all combinations work
+# - istio-system.peer-authentication: legacy->foo and legacy->bar fail
+# - foo.peer-authentication: legacy->foo fails
+# - httpbin-bar.peer-authentication.yaml: legacy->bar fails

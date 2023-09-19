@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: edition-cnn-com
+spec:
+  host: edition.cnn.com
+  trafficPolicy:
+    portLevelSettings:
+      - port:
+          number: 80
+        tls:
+          # initiates HTTPS when accessing edition.cnn.com
+          mode: SIMPLE
+          # caCertificates: system # not needed when VERIFY_CERTIFICATE_AT_CLIENT is set to "true"
+          subjectAltNames:
+            - cnn.com
+          sni: edition.cnn.com

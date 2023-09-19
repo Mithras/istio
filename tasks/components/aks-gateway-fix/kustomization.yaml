@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+# BUG: https://github.com/istio/istio/issues/46769
+patches:
+  - patch: |-
+      - op: add
+        path: /metadata/annotations
+        value: 
+          service.beta.kubernetes.io/port_80_health-probe_protocol: tcp
+    target:
+      kind: Gateway

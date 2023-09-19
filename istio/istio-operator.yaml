@@ -4,4 +4,16 @@ metadata:
   namespace: istio-system
   name: istio
 spec:
-  profile: default
+  profile: minimal
+  # meshConfig:
+  #   outboundTrafficPolicy:
+  #     mode: REGISTRY_ONLY
+  # values:
+  #   global:
+  #     proxy:
+  #       # only route these ranges to the Envoy proxy
+  #       includeIPRanges: "10.244.0.0/16,10.240.0.0/16" # (AKS internal)
+  # values:
+  #   pilot:
+  #     env:
+  #       VERIFY_CERTIFICATE_AT_CLIENT: "true"
